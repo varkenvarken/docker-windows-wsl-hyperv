@@ -1,9 +1,29 @@
-# Docker for windows side-by-side with Hyper-V Vms
+<!-- vscode-markdown-toc -->
+* 1. [Intro](#Intro)
+* 2. [Goals](#Goals)
+* 3. [External references](#Externalreferences)
+* 4. [Prerequisites](#Prerequisites)
+* 5. [Step by step installation](#Stepbystepinstallation)
+* 6. [Architecture](#Architecture)
+	* 6.1. [Enable Hyper-V and Containers](#EnableHyper-VandContainers)
+	* 6.2. [Convert any existing VirtualBox VM we want to keep](#ConvertanyexistingVirtualBoxVMwewanttokeep)
+	* 6.3. [Configure Windows to run docker for Windows](#ConfigureWindowstorundockerforWindows)
+	* 6.4. [Install the Windows Subsystem for Linux](#InstalltheWindowsSubsystemforLinux)
+	* 6.5. [Configure WSL to run docker for Linux](#ConfigureWSLtorundockerforLinux)
+	* 6.6. [Expose the linux dockerd as a context in windows](#Exposethelinuxdockerdasacontextinwindows)
+* 7. [questions to solve:](#questionstosolve:)
+
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc --># Docker for windows side-by-side with Hyper-V Vms
 
 In this step-by-step guide we will install Hyper-V alongside the Windows Subsystem for Linux,
 and install docker, both in WSL and Windows, but without installing Docker Desktop for Windows.
 
-## Intro
+
+##  1. <a name='Intro'></a>Intro
 
 Because more and more Kofax Products can be run as Docker containers, we would like to be able
 to run those containers on our local laptop for demonstration purposes and proof of concepts.
@@ -23,7 +43,7 @@ So I wanted to get rid of VirtualBox, and use Hyper-V instead and at the same ti
 
 This is in fact possible, and although this means we will not have a nice graphical user interface, we can build images and run containers from a command line without issue, while at the same time run virtual machines if we need them.
 
-## Goals
+##  2. <a name='Goals'></a>Goals
 
 We want to be able to run side-by-side on a single laptop
 
@@ -37,7 +57,7 @@ We do not want to use anything for which we would need a commercial license
 - no VMWare
 - no Docker Desktop for Windows
 
-## External references
+##  3. <a name='Externalreferences'></a>External references
 
 Although it has been quite a bit of work to compile all of this,
 none of this can be called orginal research and relies heavily on
@@ -55,12 +75,12 @@ by the time you read this.
 https://download.docker.com/win/static/stable/x86_64/
 
 
-## Prerequisites
+##  4. <a name='Prerequisites'></a>Prerequisites
 
 - W10 fully updated as of 17/11/2022  (Only Pro and Enterprise, Home edition will not work)
 - Machine connected to the internet
 
-## Step by step installation
+##  5. <a name='Stepbystepinstallation'></a>Step by step installation
 
 - enable Hyper-V and Containers
 - convert any existing VirtualBox VM we want to keep
@@ -69,13 +89,13 @@ https://download.docker.com/win/static/stable/x86_64/
 - configure WSL to run docker for Linux
 - expose the linux dockerd as a context in windows
 
-## Architecture
+##  6. <a name='Architecture'></a>Architecture
 
 Because it can be quite confusing to grasp the relations between all the components, this diagram might offer some help:
 
 ![Architecture overview](https://docs.google.com/drawings/d/e/2PACX-1vTfbt5t-qXAZUEQFV2VCewDZKV-lMxqNEmrDMTbEpZzJqQ9dE-D8G5d2v3SiQITCvtRT-pcLDFcpPqh/pub?w=960&h=720)
 
-### Enable Hyper-V and Containers
+###  6.1. <a name='EnableHyper-VandContainers'></a>Enable Hyper-V and Containers
 
 In an elevated Powershell:
 
@@ -88,7 +108,7 @@ Then reboot.
 
 After the reboot, the Hyper-V manager will be available in the Windows Start menu in the group Windows Administrative tools.
 
-### Convert any existing VirtualBox VM we want to keep
+###  6.2. <a name='ConvertanyexistingVirtualBoxVMwewanttokeep'></a>Convert any existing VirtualBox VM we want to keep
 
 Existing VirtualBox VMs cannot be run directly under Hyper-V,
 and as far as I know it is not possible to import Virtual Appliances (.ova) into Hyper-V,
@@ -107,7 +127,7 @@ convert-vhd  -Path '.\Docker Clone_copy.vhd' -DestinationPath '.\Docker Clone_co
 
 You can test any converted VMs before proceeding by creating a new VM in the Hyper-V manager that refers to the .vhdx.
 
-### Configure Windows to run docker for Windows
+###  6.3. <a name='ConfigureWindowstorundockerforWindows'></a>Configure Windows to run docker for Windows
 
 We need to download and install docker for windows (which is not the same as Docker Desktop for Windows!) first,
 and the run it as a service. That's just a few commands and we test whether docker can run a a container as the final step.
@@ -126,23 +146,23 @@ Start-Service docker
 docker run hello-world
 ```
 
-### Install the Windows Subsystem for Linux
+###  6.4. <a name='InstalltheWindowsSubsystemforLinux'></a>Install the Windows Subsystem for Linux
 
 Installing the Windows Subsystem for Linux (version 2) used to be a hassle in older revisions of Windows 10,
 but nowadays it is a single command.
 
 In Powershell w. elevated privileges
 
-'''powershell
+```powershell
 wsl --install
-'''
+```
 
 Then reboot.
 
 This will make Ubuntu available directly in the Start menu. It ise possible to install a different Linux distro,
 but here we used Ubuntu and the following steps rely on this.
 
-### Configure WSL to run docker for Linux
+###  6.5. <a name='ConfigureWSLtorundockerforLinux'></a>Configure WSL to run docker for Linux
 
 First enable systemd/distrod inside WSL2.
 This provides easy management and configuration of Linux daemons, something we need to make
@@ -181,7 +201,7 @@ docker run hello-world
 
 This hello-world container will be based on a linux image. 
 
-### Expose the linux dockerd as a context in windows
+###  6.6. <a name='Exposethelinuxdockerdasacontextinwindows'></a>Expose the linux dockerd as a context in windows
 
 Now we have two docker installations, one inside WSL and one directly in Windows. 
 But we want to be able to control both of them from a single Powershell.
@@ -211,11 +231,9 @@ Now we can interact with both dockerd deamons from within a Powershell w. elevat
 docker ps
 # the WSL dockerd
 docker -c lin ps
-
-
 ```
 
-## questions to solve:
+##  7. <a name='questionstosolve:'></a>questions to solve:
 - can we use docker compose to start containers in different context from a single docker-compose file?
 - where are the docker images stored? (for ubuntu as well as windows)
 - can you expose usb devices inside containers?
