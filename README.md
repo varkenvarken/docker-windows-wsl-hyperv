@@ -69,6 +69,12 @@ https://download.docker.com/win/static/stable/x86_64/
 - configure WSL to run docker for Linux
 - expose the linux dockerd as a context in windows
 
+## Architecture
+
+Because it can be quite confusing to grasp the relations between all the components, this diagram might offer some help:
+
+![Architecture overview](https://docs.google.com/drawings/d/e/2PACX-1vTfbt5t-qXAZUEQFV2VCewDZKV-lMxqNEmrDMTbEpZzJqQ9dE-D8G5d2v3SiQITCvtRT-pcLDFcpPqh/pub?w=960&h=720)
+
 ### Enable Hyper-V and Containers
 
 In an elevated Powershell:
