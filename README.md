@@ -146,6 +146,15 @@ Start-Service docker
 docker run hello-world
 ```
 
+We also want to install docker-compose. Unlike for Linux, this is only available as a standalone, not as a plugin.
+(see: https://docs.docker.com/compose/install/other/)
+
+```powershell
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+Start-BitsTransfer -Source "https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-Windows-...
+docker-compose version
+```
+
 ###  6.4. <a name='InstalltheWindowsSubsystemforLinux'></a>Install the Windows Subsystem for Linux
 
 Installing the Windows Subsystem for Linux (version 2) used to be a hassle in older revisions of Windows 10,
@@ -235,5 +244,22 @@ docker -c lin ps
 
 ##  7. <a name='questionstosolve:'></a>questions to solve:
 - can we use docker compose to start containers in different context from a single docker-compose file?
+    unknown; you can deploy all services to a single context with --context , but unclear if a docker-compose file can be configured to deploy services to different contexts
+    
 - where are the docker images stored? (for ubuntu as well as windows)
+    Ubuntu: /var/lib/docker (see: https://linuxconfig.org/how-to-move-docker-s-default-var-lib-docker-to-another-directory-on-ubuntu-debian-linux)
+
+    ```bash
+    sudo systemctl stop docker.service
+    sudo systemctl stop docker.socket
+    # in an editor, change the ExecStart line to
+    # ExecStart=/usr/bin/dockerd -g /mnt/d/docker -H fd:// --containerd=/run/containerd/containerd.sock
+    joe /lib/systemd/system/docker.service
+    mkdir -p /mnt/d/docker
+    cp -rp /var/lib/docker/ /mnt/d/docker
+    systemctl daemon-reload
+    docker run hello-world
+    ```
+
 - can you expose usb devices inside containers?
+    unknown
