@@ -1,31 +1,25 @@
-<!-- vscode-markdown-toc -->
-* 1. [Intro](#Intro)
-* 2. [Goals](#Goals)
-* 3. [External references](#Externalreferences)
-* 4. [Prerequisites](#Prerequisites)
-* 5. [Step by step installation](#Stepbystepinstallation)
-	* 5.1. [Architecture](#Architecture)
-	* 5.2. [Enable Hyper-V and Containers](#EnableHyper-VandContainers)
-	* 5.3. [Convert any existing VirtualBox VM we want to keep](#ConvertanyexistingVirtualBoxVMwewanttokeep)
-	* 5.4. [Configure Windows to run docker for Windows](#ConfigureWindowstorundockerforWindows)
-	* 5.5. [Install the Windows Subsystem for Linux](#InstalltheWindowsSubsystemforLinux)
-	* 5.6. [Configure WSL to run docker for Linux](#ConfigureWSLtorundockerforLinux)
-	* 5.7. [Expose the linux dockerd as a context in windows](#Exposethelinuxdockerdasacontextinwindows)
-* 6. [questions to solve:](#questionstosolve:)
-
-<!-- vscode-markdown-toc-config
-	numbering=true
-	autoSave=true
-	/vscode-markdown-toc-config -->
-<!-- /vscode-markdown-toc -->
-
+- [Docker for windows side-by-side with Hyper-V Vms](#docker-for-windows-side-by-side-with-hyper-v-vms)
+  - [Intro](#intro)
+  - [Goals](#goals)
+  - [External references](#external-references)
+  - [Prerequisites](#prerequisites)
+  - [Step by step installation](#step-by-step-installation)
+    - [Architecture](#architecture)
+    - [Enable Hyper-V and Containers](#enable-hyper-v-and-containers)
+    - [Convert any existing VirtualBox VM we want to keep](#convert-any-existing-virtualbox-vm-we-want-to-keep)
+    - [Configure Windows to run docker for Windows](#configure-windows-to-run-docker-for-windows)
+    - [Install the Windows Subsystem for Linux](#install-the-windows-subsystem-for-linux)
+    - [5.6. Configure WSL to run docker for Linux](#56-configure-wsl-to-run-docker-for-linux)
+    - [Expose the linux dockerd as a context in windows](#expose-the-linux-dockerd-as-a-context-in-windows)
+  - [Questions to solve:](#questions-to-solve)
+  
 # Docker for windows side-by-side with Hyper-V Vms
 
 In this step-by-step guide we will install Hyper-V alongside the Windows Subsystem for Linux,
 and install docker, both in WSL and Windows, but without installing Docker Desktop for Windows.
 
 
-##  1. <a name='Intro'></a>Intro
+## Intro
 
 Because more and more Kofax Products can be run as Docker containers, we would like to be able
 to run those containers on our local laptop for demonstration purposes and proof of concepts.
@@ -45,7 +39,7 @@ So I wanted to get rid of VirtualBox, and use Hyper-V instead and at the same ti
 
 This is in fact possible, and although this means we will not have a nice graphical user interface, we can build images and run containers from a command line without issue, while at the same time run virtual machines if we need them.
 
-##  2. <a name='Goals'></a>Goals
+##  Goals
 
 We want to be able to run side-by-side on a single laptop
 
@@ -59,7 +53,7 @@ We do not want to use anything for which we would need a commercial license
 - no VMWare
 - no Docker Desktop for Windows
 
-##  3. <a name='Externalreferences'></a>External references
+##  External references
 
 Although it has been quite a bit of work to compile all of this,
 none of this can be called orginal research and relies heavily on
@@ -77,12 +71,12 @@ by the time you read this.
 https://download.docker.com/win/static/stable/x86_64/
 
 
-##  4. <a name='Prerequisites'></a>Prerequisites
+##  Prerequisites
 
 - W10 fully updated as of 17/11/2022  (Only Pro and Enterprise, Home edition will not work)
 - Machine connected to the internet
 
-##  5. <a name='Stepbystepinstallation'></a>Step by step installation
+##  Step by step installation
 
 - enable Hyper-V and Containers
 - convert any existing VirtualBox VM we want to keep
@@ -91,13 +85,13 @@ https://download.docker.com/win/static/stable/x86_64/
 - configure WSL to run docker for Linux
 - expose the linux dockerd as a context in windows
 
-###  5.1. <a name='Architecture'></a>Architecture
+###  Architecture
 
 Because it can be quite confusing to grasp the relations between all the components, this diagram might offer some help:
 
 ![Architecture overview](https://docs.google.com/drawings/d/e/2PACX-1vTfbt5t-qXAZUEQFV2VCewDZKV-lMxqNEmrDMTbEpZzJqQ9dE-D8G5d2v3SiQITCvtRT-pcLDFcpPqh/pub?w=960&h=720)
 
-###  5.2. <a name='EnableHyper-VandContainers'></a>Enable Hyper-V and Containers
+###  Enable Hyper-V and Containers
 
 In an elevated Powershell:
 
@@ -110,7 +104,7 @@ Then reboot.
 
 After the reboot, the Hyper-V manager will be available in the Windows Start menu in the group Windows Administrative tools.
 
-###  5.3. <a name='ConvertanyexistingVirtualBoxVMwewanttokeep'></a>Convert any existing VirtualBox VM we want to keep
+###  Convert any existing VirtualBox VM we want to keep
 
 Existing VirtualBox VMs cannot be run directly under Hyper-V,
 and as far as I know it is not possible to import Virtual Appliances (.ova) into Hyper-V,
@@ -129,7 +123,7 @@ convert-vhd  -Path '.\Docker Clone_copy.vhd' -DestinationPath '.\Docker Clone_co
 
 You can test any converted VMs before proceeding by creating a new VM in the Hyper-V manager that refers to the .vhdx.
 
-###  5.4. <a name='ConfigureWindowstorundockerforWindows'></a>Configure Windows to run docker for Windows
+###  Configure Windows to run docker for Windows
 
 We need to download and install docker for windows (which is not the same as Docker Desktop for Windows!) first,
 and the run it as a service. That's just a few commands and we test whether docker can run a a container as the final step.
@@ -170,7 +164,7 @@ The directory is what I use, it can be anything of course.
 
 Reboot to have this take effect.
 
-###  5.5. <a name='InstalltheWindowsSubsystemforLinux'></a>Install the Windows Subsystem for Linux
+###  Install the Windows Subsystem for Linux
 
 Installing the Windows Subsystem for Linux (version 2) used to be a hassle in older revisions of Windows 10,
 but nowadays it is a single command.
@@ -183,10 +177,10 @@ wsl --install
 
 Then reboot.
 
-This will make Ubuntu available directly in the Start menu. It ise possible to install a different Linux distro,
+This will make Ubuntu available directly in the Start menu. It is possible to install a different Linux distro,
 but here we used Ubuntu and the following steps rely on this.
 
-###  5.6. <a name='ConfigureWSLtorundockerforLinux'></a>Configure WSL to run docker for Linux
+###  5.6. Configure WSL to run docker for Linux
 
 First enable systemd/distrod inside WSL2.
 This provides easy management and configuration of Linux daemons, something we need to make
@@ -197,9 +191,12 @@ see: https://github.com/nullpo-head/wsl-distrod
 Inside your WSL (Ubuntu) terminal:
 
 ```bash
+sudo bash
+```
+```bash
 curl -L -O "https://raw.githubusercontent.com/nullpo-head/wsl-distrod/main/install.sh"
 chmod +x install.sh
-sudo ./install.sh install
+./install.sh install
 /opt/distrod/bin/distrod enable --start-on-windows-boot
 ```
 
@@ -217,6 +214,8 @@ Then we install the docker service, start it and test it.
 
 ```bash
 sudo bash
+```
+```bash
 apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
@@ -232,19 +231,22 @@ You may want to change the location of the image and container data.
 (see: https://linuxconfig.org/how-to-move-docker-s-default-var-lib-docker-to-another-directory-on-ubuntu-debian-linux)
 
 ```bash
-sudo systemctl stop docker.service
-sudo systemctl stop docker.socket
+sudo bash
+```
+```bash
+systemctl stop docker.service
+systemctl stop docker.socket
 # in an editor, change the ExecStart line to
 # ExecStart=/usr/bin/dockerd -g /mnt/d/docker -H fd:// --containerd=/run/containerd/containerd.sock
 joe /lib/systemd/system/docker.service
 mkdir -p /mnt/d/docker
 cp -rp /var/lib/docker/ /mnt/d/docker   # will complain about a block device, can be ignored
 systemctl daemon-reload
-sudo systemctl start docker.service
+systemctl start docker.service
 docker run hello-world
 ```
 
-###  5.7. <a name='Exposethelinuxdockerdasacontextinwindows'></a>Expose the linux dockerd as a context in windows
+### Expose the linux dockerd as a context in windows
 
 Now we have two docker installations, one inside WSL and one directly in Windows. 
 But we want to be able to control both of them from a single Powershell.
@@ -255,6 +257,8 @@ Inside your WSL (Ubuntu) terminal:
 
 ```bash
 sudo bash
+```
+```bash
 cp /lib/systemd/system/docker.service /etc/systemd/system/
 sed -i 's/\ -H\ fd:\/\//\ -H\ fd:\/\/\ -H\ tcp:\/\/127.0.0.1:2375/g' /etc/systemd/system/docker.service
 systemctl daemon-reload
@@ -276,7 +280,7 @@ docker ps
 docker -c lin ps
 ```
 
-##  6. <a name='questionstosolve:'></a>questions to solve:
+## Questions to solve:
 - can we use docker compose to start containers in different context from a single docker-compose file?
     unknown; you can deploy all services to a single context with --context , but unclear if a docker-compose file can be configured to deploy services to different contexts
     
@@ -287,3 +291,6 @@ docker -c lin ps
     should be possible, see: https://github.com/luxzg/WSL2-fixes, but I cannot get to to work yet.
 	Perhaps because I don't run Windows 11 and/or don't have the prerelease of the WSL
 	(my wsl command does not recognize the --version option)
+
+- security
+    inside WSL we execute docker commands as root. It would be better to allow just some unprivileged users to run docker
