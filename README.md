@@ -11,13 +11,13 @@
     - [Install the Windows Subsystem for Linux](#install-the-windows-subsystem-for-linux)
     - [Configure WSL to run docker for Linux](#configure-wsl-to-run-docker-for-linux)
     - [Expose the linux dockerd as a context in windows](#expose-the-linux-dockerd-as-a-context-in-windows)
+  - [Tests](#tests)
   - [Questions to solve](#questions-to-solve)
   
 # Docker for windows side-by-side with Hyper-V Vms
 
 In this step-by-step guide we will install Hyper-V alongside the Windows Subsystem for Linux,
 and install docker, both in WSL and Windows, but without installing Docker Desktop for Windows.
-
 
 ## Intro
 
@@ -31,13 +31,20 @@ for example, even though RPA's management console, roboserver and several other 
 Linux based containers, the Document Transformation Service cannot, because it is a Internet Information Service application.
 
 I use VirtualBox for my virtual machines and can host a docker service in an Ubuntu VM to run Linux based containers.
-However, to run windows based containers, we need to run docker for windows, which implies that Hyper-V should be activated on the Laptop.
-Hyper-V is able run alongside VirtualBox, but Docker Desktop for Windows (the standard solution pushed by Docker to run containers on
-Windows 10) doesn't play nice with VirtualBox and isn't free. Also, VirtualBox is not free for commercial use.
+However, to run windows based containers, we need to run docker for windows,
+which implies that Hyper-V should be activated on the Laptop.
+Hyper-V is able run alongside VirtualBox, but Docker Desktop for Windows (the standard solution pushed by Docker to run containers on Windows 10) doesn't play nice with VirtualBox and isn't free.
+Also, VirtualBox is not free for commercial use.
 
-So I wanted to get rid of VirtualBox, and use Hyper-V instead and at the same time have an alternative to Docker Desktop for Windows.
+So I wanted to get rid of VirtualBox, use Hyper-V instead and at the same time have an alternative to Docker Desktop for Windows.
 
-This is in fact possible, and although this means we will not have a nice graphical user interface, we can build images and run containers from a command line without issue, while at the same time run virtual machines if we need them.
+This is in fact possible, and although this means we will not have a nice graphical user interface*, we can build images and run containers from a command line without issue, while at the same time run virtual machines if we need them.
+
+!!! note *
+    I am aware that there are GUI alternatives,
+    for example [Rancher](https://docs.rancherdesktop.io/getting-started/installation/),
+    but these are still in heavy development and I have not tried them and probaby won't
+    as a CLI is fine for me.
 
 ##  Goals
 
@@ -65,7 +72,7 @@ research and documentation provided by others:
 
 The basic docker for windows is still provided free of charge, unlike Docker Desktop for Windows,
 but the installers are a bit hidden on the Docker site. Check the link below to see what the latest
-version is. In the steps below we used docker-20.10.21.zip but a newer version might be available
+version is. In the steps below we used `docker-20.10.21.zip`, but a newer version might be available
 by the time you read this.
 
 https://download.docker.com/win/static/stable/x86_64/
@@ -74,16 +81,33 @@ https://download.docker.com/win/static/stable/x86_64/
 ##  Prerequisites
 
 - W10 fully updated as of 17/11/2022  (Only Pro and Enterprise, Home edition will not work)
-- Machine connected to the internet
+- Machine connected to the internet (To download all kinds of packages etc.)
 
 ##  Step by step installation
 
 - enable Hyper-V and Containers
+  
+  We need the first to run Virtual Machines and the Windows Subsystem for Linux, and the second for Docker.
+
 - convert any existing VirtualBox VM we want to keep
+  
+  This might be optional for you, but I want to have a backup I can go back to even if everything doesn't work out.
+
 - configure Windows to run docker for Windows
+  
+  Not difficult but Docker keeps this a bit hidden and pushed Docker Desktop everywhere.
+
 - install the Windows Subsystem for Linux
+  
+  Not strictly necessary as we can run Docker for Linux inside a Virtual Machine on Hyper-V, but nice to have as this is light weight and well integrated in the rest of Windows. 
+
 - configure WSL to run docker for Linux
+  
+  Basically installing a few packages and you should be good to go, but Ubuntu in WSL lacks systemd so we need to make sure that is all up and running as well.
+
 - expose the linux dockerd as a context in windows
+
+  So we can build images and run containers both in Linux and Windows from the same Powershell.
 
 ###  Architecture
 
@@ -278,7 +302,7 @@ In Powershell w. elevated privileges
 docker context create lin --docker host=tcp://127.0.0.1:2375
 ```
 
-Now we can interact with both dockerd deamons from within a Powershell w. elevated prvileges:
+Now we can interact with both dockerd deamons from within a Powershell w. elevated privileges:
 
 ```powershell
 # the windows dockerd
@@ -286,6 +310,8 @@ docker ps
 # the WSL dockerd
 docker -c lin ps
 ```
+
+## Tests
 
 ## Questions to solve
 - can we use docker compose to start containers in different context from a single docker-compose file?
