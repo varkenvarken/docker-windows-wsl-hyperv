@@ -12,6 +12,8 @@
     - [Configure WSL to run docker for Linux](#configure-wsl-to-run-docker-for-linux)
     - [Expose the linux dockerd as a context in windows](#expose-the-linux-dockerd-as-a-context-in-windows)
   - [Tests](#tests)
+    - [Building and deploying RPA images in docker in WSL](#building-and-deploying-rpa-images-in-docker-in-wsl)
+    - [Building and deploying RPA images in docker for Windows](#building-and-deploying-rpa-images-in-docker-for-windows)
   - [Questions to solve](#questions-to-solve)
   
 # Docker for windows side-by-side with Hyper-V Vms
@@ -312,6 +314,58 @@ docker -c lin ps
 ```
 
 ## Tests
+
+### Building and deploying RPA images in docker in WSL
+
+The proof of the pudding for Docker inside WSL is checking if we can build an run images.
+
+This would mean
+
+- unpacking the Linux RPA package (I used a RPA 11.4 prerelease, `KofaxRPA-11.4.0.tar.gz`)
+- copying the file `docker-compose-kapplets-rfs.yml` to the extracted folder
+- copying secrets etc.
+- and then verifying the yaml, building the images and deploying the services
+
+!!! note
+    secrets in docker-compose on a remote context [do not work](https://github.com/docker/compose/issues/8244#event-4534570561).
+    So unless we go the docker swarm way or start using Kubernetes we cannot use secrets this way.
+
+In an elevated Powershell
+
+```powershell
+docker context use lin
+cd D:\KofaxRPA-11.4.0.0.184-Linux\
+# edit the docker compose file with license info (optional, you can also enter these in the MC's first run)
+# then verify your config
+docker-compose -f .\docker-compose-kapplets-rfs.yml --project-directory . config
+# bring up one of the postgres databases, just to verify we can
+docker-compose -f .\docker-compose-kapplets-rfs.yml --project-directory . up postgres-service -d
+# build the managementconsole-service
+docker-compose -f .\docker-compose-kapplets-rfs.yml build managementconsole-service
+# build everything (mc, roboserver, kapplets, rfs)
+docker-compose -f .\docker-compose-kapplets-rfs.yml build
+# list them
+docker images
+# deploy the whole setup
+docker-compose -f .\docker-compose-kapplets-rfs.yml up -d
+# containers will be up quickly, but the MC might take quite a while to be fully up and running (tomcat has to start etc)
+# after a minute or two, we should be able to access te management console
+# In chrome:  http://localhost  (login with admin/admin or whatever you configured in the docker-compose, and enter
+# your license info if prompted)
+# likewise, the kapplets server should be on http://localhost:84
+# (but make sure to set relevant entries in your hosts file)
+```
+
+Entries for your hosts file (I don't know yet how to have containers accessible on the external interface)
+```
+127.0.0.1 robotfilesystem-service
+127.0.0.1 postgres-service-data
+127.0.0.1 managementconsole-service
+```
+
+### Building and deploying RPA images in docker for Windows
+
+TODO
 
 ## Questions to solve
 - can we use docker compose to start containers in different context from a single docker-compose file?
