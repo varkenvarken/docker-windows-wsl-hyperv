@@ -9,9 +9,9 @@
     - [Convert any existing VirtualBox VM we want to keep](#convert-any-existing-virtualbox-vm-we-want-to-keep)
     - [Configure Windows to run docker for Windows](#configure-windows-to-run-docker-for-windows)
     - [Install the Windows Subsystem for Linux](#install-the-windows-subsystem-for-linux)
-    - [5.6. Configure WSL to run docker for Linux](#56-configure-wsl-to-run-docker-for-linux)
+    - [Configure WSL to run docker for Linux](#configure-wsl-to-run-docker-for-linux)
     - [Expose the linux dockerd as a context in windows](#expose-the-linux-dockerd-as-a-context-in-windows)
-  - [Questions to solve:](#questions-to-solve)
+  - [Questions to solve](#questions-to-solve)
   
 # Docker for windows side-by-side with Hyper-V Vms
 
@@ -180,7 +180,7 @@ Then reboot.
 This will make Ubuntu available directly in the Start menu. It is possible to install a different Linux distro,
 but here we used Ubuntu and the following steps rely on this.
 
-###  5.6. Configure WSL to run docker for Linux
+###  Configure WSL to run docker for Linux
 
 First enable systemd/distrod inside WSL2.
 This provides easy management and configuration of Linux daemons, something we need to make
@@ -287,7 +287,7 @@ docker ps
 docker -c lin ps
 ```
 
-## Questions to solve:
+## Questions to solve
 - can we use docker compose to start containers in different context from a single docker-compose file?
     unknown; you can deploy all services to a single context with --context , but unclear if a docker-compose file can be configured to deploy services to different contexts
     
