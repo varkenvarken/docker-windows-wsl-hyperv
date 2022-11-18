@@ -203,6 +203,8 @@ sudo ./install.sh install
 /opt/distrod/bin/distrod enable --start-on-windows-boot
 ```
 
+That last command will inform you that you'll need to provide your Windows credentials in order to install this service.
+
 In Powershell w. elevated privileges
 
 ```powershell
@@ -238,6 +240,7 @@ joe /lib/systemd/system/docker.service
 mkdir -p /mnt/d/docker
 cp -rp /var/lib/docker/ /mnt/d/docker   # will complain about a block device, can be ignored
 systemctl daemon-reload
+sudo systemctl start docker.service
 docker run hello-world
 ```
 
@@ -281,4 +284,6 @@ docker -c lin ps
     unknown
 
 - can we bridge WSL?
-    should be possible, see: https://github.com/luxzg/WSL2-fixes
+    should be possible, see: https://github.com/luxzg/WSL2-fixes, but I cannot get to to work yet.
+	Perhaps because I don't run Windows 11 and/or don't have the prerelease of the WSL
+	(my wsl command does not recognize the --version option)
