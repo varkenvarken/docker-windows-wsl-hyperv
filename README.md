@@ -200,6 +200,11 @@ chmod +x install.sh
 /opt/distrod/bin/distrod enable --start-on-windows-boot
 ```
 
+!!! note
+    be warned that if you copy this last set of commands from a markdown page as shown on GitHub for example,
+    the last command is in fact not executed if you paste the whole lot into your terminal.
+    Make sure to to cut/paste this last one seperately.
+
 That last command will inform you that you'll need to provide your Windows credentials in order to install this service.
 
 In Powershell w. elevated privileges
@@ -226,7 +231,9 @@ docker run hello-world
 
 This hello-world container will be based on a linux image.
 
-You may want to change the location of the image and container data.
+You may want to change the location of the image and container data. The default is in /var/lib/docker and the root file system of the WSL system actually takes up space on C: and that space is limited. However, I had all kinds of errors relating
+to the filesystem when pulling some images, so in the end I unregistered Ubuntu and installed it again and left things to
+their default.
 
 (see: https://linuxconfig.org/how-to-move-docker-s-default-var-lib-docker-to-another-directory-on-ubuntu-debian-linux)
 
