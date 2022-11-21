@@ -93,7 +93,7 @@ https://download.docker.com/win/static/stable/x86_64/
 
 - convert any existing VirtualBox VM we want to keep
   
-  This might be optional for you, but I want to have a backup I can go back to even if everything doesn't work out.
+  This might be optional for you, but I want to have a backup I can go back to even if something doesn't work out.
 
 - configure Windows to run docker for Windows
   
@@ -152,7 +152,7 @@ You can test any converted VMs before proceeding by creating a new VM in the Hyp
 ###  Configure Windows to run docker for Windows
 
 We need to download and install docker for windows (which is not the same as Docker Desktop for Windows!) first,
-and the run it as a service. That's just a few commands and we test whether docker can run a a container as the final step.
+and the run it as a service. That's just a few commands and we test whether docker can run a container as the final step.
 This will run a windows based container, as you will be able to verify by looking at the output.
 
 In Powershell w. elevated privileges
@@ -173,7 +173,7 @@ We also want to install docker-compose. Unlike for Linux, this is only available
 
 ```powershell
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-Start-BitsTransfer -Source "https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-Windows-...
+Start-BitsTransfer -Source "https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-Windows-x86_64.exe" -Destination $Env:ProgramFiles\Docker\docker-compose.exe
 docker-compose version
 ```
 
