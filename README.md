@@ -140,7 +140,17 @@ With Hyper-V installed we can convert .vhd drives to the .vhdx format required f
 
 If you VirtualBox VM is not yet a single .vhd (because it has snapshots and/or is in .vdi format)
 Use the VirtualBox manager to clone you VM first and specifiy that you only keep the last state and convert to .vhd.
-Then convert that .vhd to a .vhdx (an example is shown below)
+
+In VirtualBox Manager:
+- Select your VM & Clone
+  (make sure to select ‘Full clone’ and ‘Current machine state’)
+
+Then convert the .vdi to .vhd
+- File --> Virtual media manager
+- Locate and select the .vdi you created in the previous step
+- Click Copy (select ‘VHD’ and ‘Dynamically allocated’)
+
+Then convert that .vhd to a .vhdx in an elevated powershell (an example is shown below)
 
 ```powershell
 cd "C:\Users\michel.anders\VirtualBox VMs\Docker Clone"
